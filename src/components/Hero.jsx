@@ -16,17 +16,17 @@ const Hero = () => {
 
     return (
         <section className="relative min-h-screen flex items-center bg-[#F2F2F2] overflow-hidden pt-20 md:pt-0">
-            {/* Background Large Text ("SNEAK") - Hidden on mobile for cleaner look */}
-            <div className="absolute inset-0 hidden md:flex items-center justify-center -z-0 opacity-[0.03] select-none pointer-events-none">
-                <h1 className="text-[25vw] font-extrabold leading-none tracking-[-0.05em] text-black/50 rotate-[-5deg] whitespace-nowrap uppercase font-heading">
-                    SNEAK
+            {/* Background Large Text ("AIR") - Static */}
+            <div className="absolute inset-0 hidden md:flex items-center justify-center -z-0 select-none pointer-events-none opacity-5">
+                <h1 className="text-[25vw] font-extrabold leading-none tracking-[-0.05em] text-black rotate-[-5deg] whitespace-nowrap uppercase font-heading">
+                    AIR
                 </h1>
             </div>
 
             <div className="max-w-7xl mx-auto px-6 w-full relative z-10 flex flex-col md:flex-row items-center gap-10 md:gap-12 py-12 md:py-20">
 
                 {/* Image Slideshow (Orders first on mobile) */}
-                <div className="order-1 md:order-2 flex-1 w-full max-w-[320px] md:max-w-[420px] self-center animate-fade-in-up md:translate-y-12">
+                <div className="order-1 md:order-2 flex-1 w-full max-w-[320px] md:max-w-[420px] self-center">
                     <div className="relative group">
                         {/* Box decoration behind image */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-white/40 blur-3xl -z-1" />
@@ -55,12 +55,12 @@ const Hero = () => {
                     </p>
 
                     <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-[-0.02em] mb-6 md:mb-8 font-heading uppercase text-brand-primary">
-                        WELCOME TO <br />
-                        <span className="text-brand-accent">SNEAKHUB</span>
+                        WELCOME TO<br />
+                        <span className="text-brand-accent">AIRSTREET</span>
                     </h1>
 
                     <p className="text-sm md:text-base lg:text-lg text-black/60 leading-relaxed max-w-lg mx-auto md:mx-0 mb-8 md:mb-12 font-inter px-4 md:px-0">
-                        Discover the latest sneakers, trending styles, and exclusive drops from top brands at SneakHub the ultimate destination for sneaker lovers.
+                        Discover the latest sneakers, trending styles, and exclusive drops from top brands at AIRSTREET the ultimate destination for sneaker lovers.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start px-6 md:px-0">

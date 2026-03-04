@@ -1,97 +1,98 @@
-import React, { useState } from 'react';
-import { ChevronRight, ArrowUpRight } from 'lucide-react';
-import section5 from '../assets/images/section5.jpg';
+import React from 'react';
+import { Truck, RotateCcw, ShieldCheck, Award, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const benefits = [
     {
         id: 1,
-        title: "Comfort That Lasts All Day",
-        description: "Our shoes are crafted with advanced cushioning and breathable materials, keeping your feet supported and comfortable from morning to night."
+        title: "Free Shipping",
+        description: "On all orders over $150. Fast and reliable delivery to your doorstep.",
+        icon: Truck
     },
     {
         id: 2,
-        title: "Premium Quality, Built to Last",
-        description: "We use only the finest materials and traditional craftsmanship to ensure every pair of SneakHub sneakers stands the test of time."
+        title: "Easy Returns",
+        description: "Not the right fit? Return within 30 days for a hassle-free exchange or refund.",
+        icon: RotateCcw
     },
     {
         id: 3,
-        title: "Perfect Fit for Every Lifestyle",
-        description: "From performance athletics to street style, our diverse range ensures you find the perfect match for your unique journey."
+        title: "Secure Payments",
+        description: "Your data is protected. We use industry-leading encryption for all transactions.",
+        icon: ShieldCheck
     },
     {
         id: 4,
-        title: "Affordable Style, Daily Deals",
-        description: "Get the latest trends without breaking the bank. We offer competitive pricing and exclusive daily drops for our community."
-    },
-    {
-        id: 5,
-        title: "Trusted by Thousands",
-        description: "Join over 50,000 satisfied customers who rely on SneakHub for their daily rotation and limited edition grails."
+        title: "Authentic Sneakers",
+        description: "Guaranteed 100% original products sourced directly from authorized brands.",
+        icon: Award
     }
 ];
 
 const Benefits = () => {
-    const [activeId, setActiveId] = useState(1);
-
     return (
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-
-                    {/* Left: Framed Image */}
-                    <div className="w-full lg:w-[45%]">
-                        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.15)] group">
-                            <img
-                                src={section5}
-                                alt="Sneaker Showcase"
-                                className="w-full h-full object-cover transition-transform duration-1000"
-                            />
-                            {/* Modern Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                        </div>
-                    </div>
-
-                    {/* Right: Content Section */}
-                    <div className="w-full lg:w-[55%]">
-                        <h2 className="text-4xl md:text-6xl font-black font-heading text-black mb-12 tracking-tight">
-                            Why Choose Us
-                        </h2>
-
-                        <div className="space-y-3 mb-12">
-                            {benefits.map((benefit) => (
-                                <div
-                                    key={benefit.id}
-                                    className={`rounded-[20px] transition-all duration-500 overflow-hidden ${activeId === benefit.id
-                                        ? 'bg-[#F4F4F4] py-6 px-8'
-                                        : 'bg-[#F4F4F4]/50 py-4 px-8 cursor-pointer hover:bg-[#F4F4F4]'
-                                        }`}
-                                    onClick={() => setActiveId(benefit.id)}
-                                >
-                                    <h3 className={`font-bold transition-all duration-300 ${activeId === benefit.id ? 'text-lg md:text-xl text-black mb-3' : 'text-base md:text-lg text-black/60'
-                                        }`}>
-                                        {benefit.title}
-                                    </h3>
-
-                                    <div className={`transition-all duration-500 ease-in-out ${activeId === benefit.id ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                                        }`}>
-                                        <p className="text-black/50 text-sm md:text-base leading-relaxed max-w-lg">
-                                            {benefit.description}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Modern Button from UI */}
-                        <button className="flex items-center gap-6 bg-[#1A1A1A] text-white pl-8 pr-2 py-2 rounded-full group transition-all duration-300 hover:bg-black shadow-xl">
-                            <span className="text-sm font-bold uppercase tracking-widest">Shop Now</span>
-                            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-black transition-transform duration-300 group-hover:rotate-45">
-                                <ArrowUpRight size={20} />
-                            </div>
-                        </button>
-                    </div>
-
+                <div className="text-center mb-16">
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="text-xs font-bold uppercase tracking-[0.3em] text-brand-accent mb-4"
+                    >
+                        Our Commitment
+                    </motion.p>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="text-4xl md:text-6xl font-black font-heading text-black uppercase tracking-tighter"
+                    >
+                        Why Choose Us
+                    </motion.h2>
                 </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {benefits.map((benefit, index) => (
+                        <motion.div
+                            key={benefit.id}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            className="bg-[#F8F8F8] p-8 rounded-[30px] group hover:bg-black transition-all duration-500 flex flex-col items-center text-center h-full"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-black mb-6 group-hover:bg-brand-accent group-hover:text-white transition-all duration-500 shadow-sm">
+                                <benefit.icon size={28} />
+                            </div>
+
+                            <h3 className="text-xl font-bold text-black mb-4 group-hover:text-white transition-colors">
+                                {benefit.title}
+                            </h3>
+
+                            <p className="text-black/50 text-sm leading-relaxed group-hover:text-white/60 transition-colors">
+                                {benefit.description}
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="mt-16 flex justify-center"
+                >
+                    <button className="flex items-center gap-6 bg-[#1A1A1A] text-white pl-8 pr-2 py-2 rounded-full group transition-all duration-300 hover:bg-brand-accent shadow-xl transform hover:scale-105">
+                        <span className="text-sm font-bold uppercase tracking-widest">Shop All Now</span>
+                        <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-black transition-transform duration-300 group-hover:rotate-45">
+                            <ArrowUpRight size={20} />
+                        </div>
+                    </button>
+                </motion.div>
             </div>
         </section>
     );

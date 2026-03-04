@@ -1,5 +1,6 @@
 import React from 'react';
 import { Plus, ShoppingBag } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 // Import images
 import nike1 from '../assets/images/nike1.avif';
@@ -78,22 +79,28 @@ const products = [
     }
 ];
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, index }) => {
     return (
-        <div className="bg-black rounded-[24px] p-6 flex flex-col group transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:-translate-y-1 border border-white/5">
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+            className="bg-white rounded-[24px] p-6 flex flex-col group transition-all duration-500 hover:-translate-y-2 border border-black/5 shadow-[8px_8px_0px_rgba(0,0,0,0.18)] hover:shadow-[12px_12px_0px_rgba(0,0,0,0.25)]"
+        >
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-black/30 mb-1">
                         {product.category}
                     </p>
-                    <h3 className="text-sm md:text-base font-bold text-white leading-tight max-w-[150px]">
+                    <h3 className="text-sm md:text-base font-bold text-black leading-tight max-w-[150px]">
                         {product.name}
                     </h3>
                 </div>
                 <div className="flex gap-1.5 pt-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-white/10"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-black/5"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-brand-accent shadow-[0_0_10px_rgba(239,68,68,0.3)]"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-teal-500/50"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-teal-500/30"></div>
                 </div>
             </div>
 
@@ -101,31 +108,37 @@ const ProductCard = ({ product }) => {
                 <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 rounded-[20px]"
+                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6 rounded-[20px]"
                 />
             </div>
 
             <div className="mt-auto flex items-center justify-between pt-4">
-                <span className="text-xl md:text-2xl font-black text-white italic tracking-tighter">
+                <span className="text-xl md:text-2xl font-black text-black italic tracking-tighter">
                     {product.price}
                 </span>
 
-                <button className="flex items-center gap-2 bg-white text-black px-4 py-2.5 rounded-full text-xs font-bold hover:bg-brand-accent hover:text-white transition-colors group/btn shadow-lg">
+                <button className="flex items-center gap-2 bg-black text-white px-4 py-2.5 rounded-full text-xs font-bold hover:bg-brand-accent transition-all group/btn shadow-lg">
                     <span>Add to Bag</span>
-                    <div className="bg-black/5 p-1 rounded-full group-hover/btn:bg-white/20">
+                    <div className="bg-white/10 p-1 rounded-full group-hover/btn:bg-white/20">
                         <Plus size={14} />
                     </div>
                 </button>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
 const NewArrivals = () => {
     return (
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8 text-center md:text-left">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8 text-center md:text-left"
+                >
                     <div className="max-w-xl">
                         <p className="text-xs font-bold uppercase tracking-[0.3em] text-brand-accent mb-4">
                             New Collection
@@ -141,11 +154,11 @@ const NewArrivals = () => {
                             <ShoppingBag size={18} />
                         </button>
                     </div>
-                </div>
+                </motion.div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-                    {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                    {products.map((product, index) => (
+                        <ProductCard key={product.id} product={product} index={index} />
                     ))}
                 </div>
             </div>
