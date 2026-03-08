@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, User, ShoppingBag, Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -17,17 +18,17 @@ const Navbar = () => {
 
                 {/* Logo Section */}
                 <div className="flex-1 flex items-center">
-                    <a href="/" className="hover:opacity-80 transition-opacity">
+                    <Link to="/" className="hover:opacity-80 transition-opacity">
                         <img src={logo} alt="AirStreet Logo" className="h-7 md:h-8 w-auto object-contain rounded-[15px] md:rounded-[20px]" />
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Desktop Navigation Links (Restored Original + New) */}
                 <div className="hidden md:flex items-center justify-center gap-10 text-[10px] font-black tracking-[0.25em] text-[#1A1A1A]">
-                    <a href="#" className="hover:text-brand-accent transition-colors uppercase">SHOP</a>
-                    <a href="#" className="hover:text-brand-accent transition-colors uppercase">NEW RELEASES</a>
-                    <a href="#" className="hover:text-brand-accent transition-colors uppercase">COLLECTIONS</a>
-                    <a href="#" className="hover:text-brand-accent transition-colors uppercase">ABOUT</a>
+                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">SHOP</Link>
+                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">NEW RELEASES</Link>
+                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">COLLECTIONS</Link>
+                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">ABOUT</Link>
                 </div>
 
                 {/* Desktop Action Area */}
@@ -40,9 +41,9 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    <button className="bg-[#111111] text-white text-[10px] font-black uppercase tracking-[0.2em] px-10 py-3.5 rounded-full hover:bg-brand-accent transition-all transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 shadow-xl shadow-black/10">
-                        Register Now
-                    </button>
+                    <Link to="/login" className="bg-[#111111] text-white text-[10px] font-black uppercase tracking-[0.2em] px-10 py-3.5 rounded-full hover:bg-brand-accent transition-all transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 shadow-xl shadow-black/10">
+                        Login
+                    </Link>
                 </div>
 
                 {/* Mobile Icons & Toggle */}
@@ -61,18 +62,22 @@ const Navbar = () => {
             {isOpen && (
                 <div className="md:hidden absolute top-20 left-0 right-0 bg-[#F2F2F2] border-t border-black/5 h-[calc(100vh-80px)] pointer-events-auto menu-open px-6 py-12">
                     <div className="flex flex-col gap-8 text-center text-lg font-black tracking-[0.2em] text-black">
-                        <a href="#" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">SHOP</a>
-                        <a href="#" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">NEW RELEASES</a>
-                        <a href="#" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">COLLECTIONS</a>
-                        <a href="#" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">ABOUT</a>
+                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">SHOP</Link>
+                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">NEW RELEASES</Link>
+                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">COLLECTIONS</Link>
+                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">ABOUT</Link>
                         <div className="h-[2px] w-12 bg-black/10 mx-auto my-4"></div>
                         <div className="flex justify-center gap-10">
                             <Search size={28} />
-                            <User size={28} />
+                            <Link to="/login" onClick={() => setIsOpen(false)}><User size={28} /></Link>
                         </div>
-                        <button className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase">
-                            Register Now
-                        </button>
+                        <Link
+                            to="/login"
+                            onClick={() => setIsOpen(false)}
+                            className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase block"
+                        >
+                            Login
+                        </Link>
                     </div>
                 </div>
             )}

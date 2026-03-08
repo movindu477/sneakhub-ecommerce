@@ -27,7 +27,7 @@ const Footer = () => {
                         className="lg:col-span-4 flex flex-col gap-10"
                     >
                         <a href="/" className="inline-block hover:opacity-80 transition-opacity">
-                            <img src={logo} alt="AirStreet Logo" className="h-10 w-auto object-contain rounded-[20px] brightness-0 invert" />
+                            <img src={logo} alt="AirStreet Logo" className="h-10 w-auto object-contain rounded-[20px]" />
                         </a>
                         <p className="text-white/40 text-sm md:text-base leading-relaxed max-w-[320px] font-inter uppercase tracking-widest font-medium">
                             The ultimate destination for premium sneakers and street culture. Curated for the few, worn by many.
