@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { Search, User, ShoppingBag, Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 md:top-6 px-4 md:px-8 pointer-events-none">
@@ -41,9 +49,23 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    <Link to="/login" className="bg-[#111111] text-white text-[10px] font-black uppercase tracking-[0.2em] px-10 py-3.5 rounded-full hover:bg-brand-accent transition-all transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 shadow-xl shadow-black/10">
-                        Login
-                    </Link>
+                    {user ? (
+                        <div className="flex items-center gap-4">
+                            <Link to="/profile" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-brand-accent transition-all shadow-lg active:scale-95 group overflow-hidden">
+                                <User size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-brand-accent transition-colors"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" className="bg-[#111111] text-white text-[10px] font-black uppercase tracking-[0.2em] px-10 py-3.5 rounded-full hover:bg-brand-accent transition-all transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 shadow-xl shadow-black/10">
+                            Login
+                        </Link>
+                    )}
                 </div>
 
                 {/* Mobile Icons & Toggle */}
@@ -71,13 +93,28 @@ const Navbar = () => {
                             <Search size={28} />
                             <Link to="/login" onClick={() => setIsOpen(false)}><User size={28} /></Link>
                         </div>
-                        <Link
-                            to="/login"
-                            onClick={() => setIsOpen(false)}
-                            className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase block"
-                        >
-                            Login
-                        </Link>
+                        {user ? (
+                            <>
+                                <Link to="/profile" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">PROFILE</Link>
+                                <button
+                                    onClick={() => {
+                                        handleLogout();
+                                        setIsOpen(false);
+                                    }}
+                                    className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase block w-full"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <Link
+                                to="/login"
+                                onClick={() => setIsOpen(false)}
+                                className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase block"
+                            >
+                                Login
+                            </Link>
+                        )}
                     </div>
                 </div>
             )}

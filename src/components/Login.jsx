@@ -85,8 +85,8 @@ const Login = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent md:bg-gradient-to-tr"></div>
 
                     <div className="relative z-10 flex flex-col justify-between h-full text-white p-4 md:p-12">
-                        <Link to="/" className="inline-block">
-                            <img src={logo} alt="SneakHub" className="h-5 md:h-12 w-auto rounded-[10px] md:rounded-[20px] object-contain" />
+                        <Link to="/" className="inline-block relative group">
+                            <img src={logo} alt="SneakHub" className="h-8 md:h-16 w-auto rounded-[12px] md:rounded-[24px] object-contain shadow-2xl transition-transform group-hover:scale-105" />
                         </Link>
 
                         <div className="hidden md:block mb-4 lg:mb-8">
@@ -112,13 +112,22 @@ const Login = () => {
 
                 {/* Form Area */}
                 <div className="flex-1 flex flex-col relative bg-white overflow-hidden">
-                    {/* Back Button Desktop */}
+                    {/* Desktop Back Button */}
                     <Link
                         to="/"
                         className="hidden md:flex absolute top-8 left-8 lg:top-12 lg:left-12 items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#111111]/40 hover:text-black transition-colors group"
                     >
                         <ArrowRight size={14} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
                         Back to site
+                    </Link>
+
+                    {/* Mobile Back Button */}
+                    <Link
+                        to="/"
+                        className="md:hidden absolute top-6 right-6 z-20 flex items-center gap-2 px-3 py-1.5 bg-black/5 rounded-full text-[9px] font-black uppercase tracking-widest text-black/40 active:bg-black active:text-white transition-all shadow-sm"
+                    >
+                        <ArrowRight size={12} className="rotate-180" />
+                        Back
                     </Link>
 
                     <div className="flex-1 flex flex-col justify-center px-6 pt-4 pb-6 md:px-12 md:py-8 lg:px-20 overflow-hidden">

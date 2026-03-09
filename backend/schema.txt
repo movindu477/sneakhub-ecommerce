@@ -1,0 +1,26 @@
+[dotenv@17.3.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+✅ Connected to SQL Server!
+✅ Users table ready.
+--- Current Users Table Schema ---
+┌─────────┬───────────────────────┬────────────┐
+│ (index) │ COLUMN_NAME           │ DATA_TYPE  │
+├─────────┼───────────────────────┼────────────┤
+│ 0       │ 'UserID'              │ 'int'      │
+│ 1       │ 'FirstName'           │ 'nvarchar' │
+│ 2       │ 'LastName'            │ 'nvarchar' │
+│ 3       │ 'Email'               │ 'nvarchar' │
+│ 4       │ 'PasswordHash'        │ 'nvarchar' │
+│ 5       │ 'PhoneNumber'         │ 'nvarchar' │
+│ 6       │ 'Role'                │ 'nvarchar' │
+│ 7       │ 'LoginProvider'       │ 'nvarchar' │
+│ 8       │ 'ProviderID'          │ 'nvarchar' │
+│ 9       │ 'EmailVerified'       │ 'bit'      │
+│ 10      │ 'AccountStatus'       │ 'nvarchar' │
+│ 11      │ 'FailedLoginAttempts' │ 'int'      │
+│ 12      │ 'PasswordResetToken'  │ 'nvarchar' │
+│ 13      │ 'PasswordResetExpiry' │ 'datetime' │
+│ 14      │ 'LastLogin'           │ 'datetime' │
+│ 15      │ 'LastLoginIP'         │ 'nvarchar' │
+│ 16      │ 'CreatedAt'           │ 'datetime' │
+│ 17      │ 'UpdatedAt'           │ 'datetime' │
+└─────────┴───────────────────────┴────────────┘

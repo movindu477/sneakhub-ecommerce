@@ -44,14 +44,14 @@ router.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // 8. Create User Record (Default Values In DB: role: 'Customer', accountStatus: 'Active', verified: 0)
+        // 8. Create User Record
         await pool.request()
             .input('fn', sql.NVarChar, firstName)
             .input('ln', sql.NVarChar, lastName)
             .input('email', sql.NVarChar, email)
             .input('pwd', sql.NVarChar, hashedPassword)
             .input('phone', sql.NVarChar, phone || null)
-            .query('INSERT INTO Users (FirstName, LastName, Email, Password, Phone) VALUES (@fn, @ln, @email, @pwd, @phone)');
+            .query('INSERT INTO Users (FirstName, LastName, Email, PasswordHash, PhoneNumber) VALUES (@fn, @ln, @email, @pwd, @phone)');
 
         // 9 & 10. Generate & Send Verification Email (Mocking for now)
         console.log(`Generating email verification token for: ${email}...`);
@@ -102,17 +102,17 @@ router.post('/login', async (req, res) => {
         }
 
         // 6. Check Password
-        const isMatch = await bcrypt.compare(password, user.Password);
+        const isMatch = await bcrypt.compare(password, user.PasswordHash);
         if (!isMatch) {
             // 7. Track Failed Login Attempts
-            await pool.request().input('id', sql.Int, user.Id).query('UPDATE Users SET FailedLoginAttempts = FailedLoginAttempts + 1 WHERE Id = @id');
+            await pool.request().input('id', sql.Int, user.UserID).query('UPDATE Users SET FailedLoginAttempts = FailedLoginAttempts + 1 WHERE UserID = @id');
             return res.status(401).json({ message: 'Invalid email or password.' });
         }
 
         // 8 & 9. Create Auth Token (JWT)
         const payload = {
             user: {
-                id: user.Id,
+                id: user.UserID,
                 role: user.Role,
                 email: user.Email,
                 name: user.FirstName
@@ -125,8 +125,8 @@ router.post('/login', async (req, res) => {
 
         // 10. Update User's Login and Clear Failed attempts
         await pool.request()
-            .input('id', sql.Int, user.Id)
-            .query('UPDATE Users SET LastLogin = GETDATE(), FailedLoginAttempts = 0 WHERE Id = @id');
+            .input('id', sql.Int, user.UserID)
+            .query('UPDATE Users SET LastLogin = GETDATE(), FailedLoginAttempts = 0 WHERE UserID = @id');
 
         // 12. Log activity
         console.log(`[USER LOGGED IN] IP: ${req.ip} - User: ${email}`);

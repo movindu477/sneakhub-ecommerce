@@ -1,0 +1,9 @@
+[dotenv@17.3.1] injecting env (7) from .env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+✅ Connected to SQL Server!
+✅ Users table ready.
+--- Database Tables ---
+┌─────────┬────────────┐
+│ (index) │ TABLE_NAME │
+├─────────┼────────────┤
+│ 0       │ 'Users'    │
+└─────────┴────────────┘

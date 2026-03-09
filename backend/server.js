@@ -25,6 +25,7 @@ app.get('/api/status', async (req, res) => {
 
 // Import and use routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/user'));
 
 // Start Server
 const PORT = process.env.PORT || 5000;

@@ -11,6 +11,7 @@ import Newsletter from './components/Newsletter'
 import Footer from './components/Footer'
 import Login from './components/Login'
 import Register from './components/Register'
+import Profile from './components/Profile'
 
 const ScrollToTop = () => {
   const [showScroll, setShowScroll] = useState(false);
@@ -70,6 +71,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   )
 }
