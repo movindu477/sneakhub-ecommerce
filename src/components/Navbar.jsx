@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, User, ShoppingBag, Menu, X } from 'lucide-react';
 import logo from '../assets/images/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -33,8 +34,8 @@ const Navbar = () => {
 
                 {/* Desktop Navigation Links (Restored Original + New) */}
                 <div className="hidden md:flex items-center justify-center gap-10 text-[10px] font-black tracking-[0.25em] text-[#1A1A1A]">
-                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">SHOP</Link>
-                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">NEW RELEASES</Link>
+                    <Link to="/" className="hover:text-brand-accent transition-colors uppercase">HOME</Link>
+                    <Link to="/shop" className="hover:text-brand-accent transition-colors uppercase">SHOP</Link>
                     <Link to="/" className="hover:text-brand-accent transition-colors uppercase">COLLECTIONS</Link>
                     <Link to="/" className="hover:text-brand-accent transition-colors uppercase">ABOUT</Link>
                 </div>
@@ -81,43 +82,107 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Panel */}
-            {isOpen && (
-                <div className="md:hidden absolute top-20 left-0 right-0 bg-[#F2F2F2] border-t border-black/5 h-[calc(100vh-80px)] pointer-events-auto menu-open px-6 py-12">
-                    <div className="flex flex-col gap-8 text-center text-lg font-black tracking-[0.2em] text-black">
-                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">SHOP</Link>
-                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">NEW RELEASES</Link>
-                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">COLLECTIONS</Link>
-                        <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">ABOUT</Link>
-                        <div className="h-[2px] w-12 bg-black/10 mx-auto my-4"></div>
-                        <div className="flex justify-center gap-10">
-                            <Search size={28} />
-                            <Link to="/login" onClick={() => setIsOpen(false)}><User size={28} /></Link>
-                        </div>
-                        {user ? (
-                            <>
-                                <Link to="/profile" onClick={() => setIsOpen(false)} className="hover:text-brand-accent transition-colors">PROFILE</Link>
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        {/* Backdrop Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
+                            className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] pointer-events-auto"
+                        />
+                        
+                        {/* Right-side Sliding Panel */}
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="md:hidden fixed top-0 right-0 h-screen w-[85%] max-w-[400px] bg-white z-[70] pointer-events-auto shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col p-10"
+                        >
+                            {/* Close Button Inside Panel */}
+                            <div className="flex justify-end mb-12">
                                 <button
-                                    onClick={() => {
-                                        handleLogout();
-                                        setIsOpen(false);
-                                    }}
-                                    className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase block w-full"
+                                    onClick={() => setIsOpen(false)}
+                                    className="w-12 h-12 flex items-center justify-center rounded-full bg-black/5 text-black hover:bg-brand-accent hover:text-white transition-all"
                                 >
-                                    Logout
+                                    <X size={26} />
                                 </button>
-                            </>
-                        ) : (
-                            <Link
-                                to="/login"
-                                onClick={() => setIsOpen(false)}
-                                className="mt-8 bg-black text-white py-5 rounded-none font-bold tracking-[0.3em] uppercase block"
-                            >
-                                Login
-                            </Link>
-                        )}
-                    </div>
-                </div>
-            )}
+                            </div>
+
+                            <div className="flex flex-col gap-8 text-left text-2xl font-black tracking-tight text-black">
+                                <Link 
+                                    to="/" 
+                                    onClick={() => setIsOpen(false)} 
+                                    className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
+                                >
+                                    HOME
+                                </Link>
+                                <Link 
+                                    to="/shop" 
+                                    onClick={() => setIsOpen(false)} 
+                                    className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
+                                >
+                                    SHOP
+                                </Link>
+                                <Link 
+                                    to="/" 
+                                    onClick={() => setIsOpen(false)} 
+                                    className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
+                                >
+                                    COLLECTIONS
+                                </Link>
+                                <Link 
+                                    to="/" 
+                                    onClick={() => setIsOpen(false)} 
+                                    className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
+                                >
+                                    ABOUT
+                                </Link>
+                                
+                                <div className="mt-auto space-y-6">
+                                    <div className="flex items-center gap-8 text-black/40 py-4">
+                                        <button className="hover:text-black transition-colors"><Search size={24} /></button>
+                                        <button className="hover:text-black transition-colors"><ShoppingBag size={24} /></button>
+                                        <Link to="/profile" onClick={() => setIsOpen(false)} className="hover:text-black transition-colors"><User size={24} /></Link>
+                                    </div>
+                                    
+                                    {user ? (
+                                        <div className="space-y-4">
+                                            <Link 
+                                                to="/profile" 
+                                                onClick={() => setIsOpen(false)} 
+                                                className="block py-5 bg-black text-white text-center rounded-[20px] font-black uppercase tracking-widest text-sm hover:bg-brand-accent transition-all"
+                                            >
+                                                MY PROFILE
+                                            </Link>
+                                            <button
+                                                onClick={() => {
+                                                    handleLogout();
+                                                    setIsOpen(false);
+                                                }}
+                                                className="block w-full py-5 border-2 border-black text-black text-center rounded-[20px] font-black uppercase tracking-widest text-sm hover:bg-black hover:text-white transition-all"
+                                            >
+                                                LOGOUT
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <Link
+                                            to="/login"
+                                            onClick={() => setIsOpen(false)}
+                                            className="block py-5 bg-black text-white text-center rounded-[20px] font-black uppercase tracking-widest text-sm hover:bg-brand-accent transition-all"
+                                        >
+                                            JOIN THE CLUB
+                                        </Link>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </nav>
     );
 };

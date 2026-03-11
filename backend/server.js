@@ -4,6 +4,8 @@ const morgan = require('morgan');
 require('dotenv').config();
 const { poolPromise } = require('./db');
 
+const path = require('path');
+
 // Initialize Express
 const app = express();
 
@@ -11,6 +13,9 @@ const app = express();
 app.use(express.json()); // Body parser
 app.use(cors()); // Enable CORS for React frontend
 app.use(morgan('dev')); // Logger
+
+// Serve static images from frontend assets
+app.use('/assets/images', express.static(path.join(__dirname, '../src/assets/images')));
 
 // Simple Status Route
 app.get('/api/status', async (req, res) => {
@@ -26,6 +31,9 @@ app.get('/api/status', async (req, res) => {
 // Import and use routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/user'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/cart', require('./routes/cart'));
+app.use('/api/wishlist', require('./routes/wishlist'));
 
 // Start Server
 const PORT = process.env.PORT || 5000;

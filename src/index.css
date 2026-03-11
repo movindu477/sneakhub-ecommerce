@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Outfit', 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -22,8 +22,9 @@ body {
 }
 
 @theme {
-  --font-syne: 'Syne', sans-serif;
-  --font-inter: 'Inter', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+  --font-syne: 'Outfit', sans-serif;
+  --font-inter: 'Outfit', sans-serif;
 
   --color-brand-primary: #000000;
   --color-brand-secondary: #F2F2F2;
@@ -37,7 +38,10 @@ body {
   h3,
   h4,
   .font-heading {
-    font-family: var(--font-syne);
+    font-family: var(--font-outfit);
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    font-weight: 800;
   }
 
   button,
