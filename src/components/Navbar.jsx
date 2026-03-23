@@ -19,10 +19,10 @@ const Navbar = () => {
         <nav className="fixed top-0 left-0 right-0 z-50 md:top-6 px-4 md:px-8 pointer-events-none">
             {/* Pill Container for Desktop / Standard Bar for Mobile */}
             <div className={`
-                max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-all duration-500
+                mx-auto flex items-center justify-between pointer-events-auto transition-all duration-500
                 ${isOpen
                     ? 'bg-[#F2F2F2] w-full h-16 px-6 rounded-none shadow-none mt-0'
-                    : 'w-[95%] md:w-full h-14 md:h-16 bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_20px_100px_-20px_rgba(0,0,0,0.1)] rounded-[20px] md:rounded-full px-6 md:px-12 mt-4 md:mt-0'}
+                    : 'w-[95%] md:w-[80%] max-w-5xl h-14 md:h-16 bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_20px_100px_-20px_rgba(0,0,0,0.1)] rounded-[20px] md:rounded-full px-6 md:px-8 mt-4 md:mt-2'}
             `}>
 
                 {/* Logo Section */}
@@ -93,7 +93,7 @@ const Navbar = () => {
                             onClick={() => setIsOpen(false)}
                             className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] pointer-events-auto"
                         />
-                        
+
                         {/* Right-side Sliding Panel */}
                         <motion.div
                             initial={{ x: '100%' }}
@@ -113,47 +113,47 @@ const Navbar = () => {
                             </div>
 
                             <div className="flex flex-col gap-8 text-left text-2xl font-black tracking-tight text-black">
-                                <Link 
-                                    to="/" 
-                                    onClick={() => setIsOpen(false)} 
+                                <Link
+                                    to="/"
+                                    onClick={() => setIsOpen(false)}
                                     className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
                                 >
                                     HOME
                                 </Link>
-                                <Link 
-                                    to="/shop" 
-                                    onClick={() => setIsOpen(false)} 
+                                <Link
+                                    to="/shop"
+                                    onClick={() => setIsOpen(false)}
                                     className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
                                 >
                                     SHOP
                                 </Link>
-                                <Link 
-                                    to="/" 
-                                    onClick={() => setIsOpen(false)} 
+                                <Link
+                                    to="/"
+                                    onClick={() => setIsOpen(false)}
                                     className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
                                 >
                                     COLLECTIONS
                                 </Link>
-                                <Link 
-                                    to="/" 
-                                    onClick={() => setIsOpen(false)} 
+                                <Link
+                                    to="/"
+                                    onClick={() => setIsOpen(false)}
                                     className="hover:text-brand-accent transition-colors border-b border-black/5 pb-2 inline-block w-full"
                                 >
                                     ABOUT
                                 </Link>
-                                
+
                                 <div className="mt-auto space-y-6">
                                     <div className="flex items-center gap-8 text-black/40 py-4">
                                         <button className="hover:text-black transition-colors"><Search size={24} /></button>
                                         <button className="hover:text-black transition-colors"><ShoppingBag size={24} /></button>
                                         <Link to="/profile" onClick={() => setIsOpen(false)} className="hover:text-black transition-colors"><User size={24} /></Link>
                                     </div>
-                                    
+
                                     {user ? (
                                         <div className="space-y-4">
-                                            <Link 
-                                                to="/profile" 
-                                                onClick={() => setIsOpen(false)} 
+                                            <Link
+                                                to="/profile"
+                                                onClick={() => setIsOpen(false)}
                                                 className="block py-5 bg-black text-white text-center rounded-[20px] font-black uppercase tracking-widest text-sm hover:bg-brand-accent transition-all"
                                             >
                                                 MY PROFILE

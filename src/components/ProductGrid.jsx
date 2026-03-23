@@ -1,28 +1,35 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Plus, Star, ShoppingCart, Search, Filter, X, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Heart, Plus, Star, ShoppingCart, Search, Filter, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ProductGrid = () => {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
-    const [filters, setFilters] = useState({
-        search: '',
-        brand: '',
-        category: '',
-        sort: 'newest',
-        minPrice: 0,
-        maxPrice: 1000
+    const [pagination, setPagination] = useState(() => {
+        const savedPage = sessionStorage.getItem('sneakhub_shop_page');
+        return { currentPage: savedPage ? parseInt(savedPage) : 1, totalPages: 1 };
+    });
+    const [filters, setFilters] = useState(() => {
+        const savedFilters = sessionStorage.getItem('sneakhub_shop_filters');
+        return savedFilters ? JSON.parse(savedFilters) : {
+            search: '',
+            brand: '',
+            category: '',
+            sort: 'newest',
+            minPrice: 0,
+            maxPrice: 1000
+        };
     });
     const [showFilters, setShowFilters] = useState(false);
-    const [previewProduct, setPreviewProduct] = useState(null);
 
     const fetchProducts = useCallback(async () => {
         setLoading(true);
         try {
             const queryParams = new URLSearchParams({
                 page: pagination.currentPage,
-                limit: 8,
+                limit: 12,
                 search: filters.search,
                 brand: filters.brand,
                 category: filters.category,
@@ -34,7 +41,15 @@ const ProductGrid = () => {
             const response = await fetch(`http://localhost:5000/api/products?${queryParams}`);
             const data = await response.json();
             
-            setProducts(data.products);
+            const formattedProducts = data.products.map(p => {
+                if (p.ProductImageURL && !p.ProductImageURL.startsWith('http')) {
+                    const filename = p.ProductImageURL.split('/').pop().split('\\').pop();
+                    p.ProductImageURL = `http://localhost:5000/assets/images/${filename}`;
+                }
+                return p;
+            });
+            
+            setProducts(formattedProducts);
             setPagination(prev => ({
                 ...prev,
                 totalPages: data.pagination.totalPages
@@ -49,6 +64,36 @@ const ProductGrid = () => {
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
+
+    // Handle hash scrolling after products are loaded
+    useEffect(() => {
+        if (!loading && products.length > 0 && window.location.hash) {
+            const id = window.location.hash.replace('#', '');
+            const scrollToElement = () => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Highlight the card temporarily
+                    element.classList.add('ring-4', 'ring-brand-accent');
+                    setTimeout(() => element.classList.remove('ring-4', 'ring-brand-accent'), 1500);
+                }
+            };
+            // Run scroll and completely strip the hash from URL to prevent infinite scrolling jumps on search/filter edits
+            setTimeout(() => {
+                scrollToElement();
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            }, 150);
+        }
+    }, [loading, products]);
+
+    // Sync pagination and filters to sessionStorage
+    useEffect(() => {
+        sessionStorage.setItem('sneakhub_shop_page', pagination.currentPage.toString());
+    }, [pagination.currentPage]);
+
+    useEffect(() => {
+        sessionStorage.setItem('sneakhub_shop_filters', JSON.stringify(filters));
+    }, [filters]);
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
@@ -110,8 +155,16 @@ const ProductGrid = () => {
         }
     };
 
+    const handlePageChange = (newPage) => {
+        setPagination(prev => ({ ...prev, currentPage: newPage }));
+        const gridElement = document.getElementById('product-grid');
+        if (gridElement) {
+            gridElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
-        <section className="bg-white py-12 md:py-24 px-6 md:px-12 min-h-screen">
+        <section id="product-grid" className="bg-white py-12 md:py-24 px-6 md:px-12 min-h-screen">
             <div className="max-w-7xl mx-auto">
                 {/* Header with Search and Filter Toggle */}
                 <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -212,7 +265,7 @@ const ProductGrid = () => {
                                     key={product.ProductID} 
                                     product={product} 
                                     index={index} 
-                                    onPreview={() => setPreviewProduct(product)}
+                                    onNavigate={() => navigate(`/product/${product.ProductID}`)}
                                     onAddToCart={() => addToCart(product.ProductID)}
                                     onWishlist={() => toggleWishlist(product.ProductID)}
                                 />
@@ -228,7 +281,7 @@ const ProductGrid = () => {
                             <div className="mt-20 flex items-center justify-center gap-4">
                                 <button 
                                     disabled={pagination.currentPage === 1}
-                                    onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+                                    onClick={() => handlePageChange(pagination.currentPage - 1)}
                                     className="p-4 rounded-full bg-[#F3F4F6] text-black disabled:opacity-20 hover:bg-black hover:text-white transition-all"
                                 >
                                     <ChevronLeft size={20} />
@@ -237,7 +290,7 @@ const ProductGrid = () => {
                                     {[...Array(pagination.totalPages)].map((_, i) => (
                                         <button 
                                             key={i}
-                                            onClick={() => setPagination(prev => ({ ...prev, currentPage: i + 1 }))}
+                                            onClick={() => handlePageChange(i + 1)}
                                             className={`w-12 h-12 rounded-full font-black text-sm transition-all ${pagination.currentPage === i + 1 ? 'bg-black text-white' : 'bg-[#F3F4F6] text-black hover:bg-black/5'}`}
                                         >
                                             {i + 1}
@@ -246,7 +299,7 @@ const ProductGrid = () => {
                                 </div>
                                 <button 
                                     disabled={pagination.currentPage === pagination.totalPages}
-                                    onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+                                    onClick={() => handlePageChange(pagination.currentPage + 1)}
                                     className="p-4 rounded-full bg-[#F3F4F6] text-black disabled:opacity-20 hover:bg-black hover:text-white transition-all"
                                 >
                                     <ChevronRight size={20} />
@@ -256,172 +309,72 @@ const ProductGrid = () => {
                     </>
                 )}
             </div>
-
-            {/* Quick Preview Modal */}
-            <AnimatePresence>
-                {previewProduct && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setPreviewProduct(null)}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-md"
-                        />
-                        <motion.div 
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-white rounded-[40px] w-full max-w-4xl relative z-10 overflow-hidden shadow-2xl flex flex-col md:flex-row"
-                        >
-                            <button 
-                                onClick={() => setPreviewProduct(null)}
-                                className="absolute top-6 right-6 z-20 w-12 h-12 rounded-full bg-black/5 text-black hover:bg-brand-accent hover:text-white transition-all flex items-center justify-center shadow-sm"
-                            >
-                                <X size={24} />
-                            </button>
-
-                            <div className="md:w-1/2 bg-[#F3F4F6] p-12 flex items-center justify-center">
-                                <motion.img 
-                                    layoutId={`img-${previewProduct.ProductID}`}
-                                    src={previewProduct.ProductImageURL} 
-                                    alt={previewProduct.ProductName} 
-                                    className="w-full h-auto drop-shadow-2xl"
-                                />
-                            </div>
-
-                            <div className="md:w-1/2 p-12 flex flex-col justify-center gap-6">
-                                <div className="space-y-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30">{previewProduct.Brand}</p>
-                                    <h2 className="text-4xl font-black tracking-tighter text-black uppercase font-outfit leading-none">{previewProduct.ProductName}</h2>
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex items-center text-yellow-500">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star key={i} size={14} fill={i < Math.floor(previewProduct.Rating) ? "currentColor" : "none"} stroke="currentColor" />
-                                            ))}
-                                        </div>
-                                        <span className="text-xs font-black text-black/20">({previewProduct.ReviewCount} REVIEWS)</span>
-                                    </div>
-                                </div>
-
-                                <p className="text-3xl font-black text-black tracking-tighter font-outfit">${previewProduct.Price}</p>
-                                
-                                <p className="text-sm text-black/60 leading-relaxed font-medium">
-                                    {previewProduct.Description}
-                                </p>
-
-                                <div className="space-y-4 pt-6">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-black/40">STOCK STATUS: <span className={previewProduct.StockQuantity > 10 ? 'text-green-500' : 'text-orange-500'}>
-                                        {previewProduct.StockQuantity > 0 ? `${previewProduct.StockQuantity} IN STOCK` : 'OUT OF STOCK'}
-                                    </span></p>
-                                    <button 
-                                        disabled={previewProduct.StockQuantity === 0}
-                                        onClick={() => {
-                                            addToCart(previewProduct.ProductID);
-                                            setPreviewProduct(null);
-                                        }}
-                                        className="w-full h-16 bg-black text-white rounded-3xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-brand-accent transition-all active:scale-95 shadow-xl shadow-black/10"
-                                    >
-                                        <ShoppingCart size={20} />
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
         </section>
     );
 };
 
-const ProductCard = ({ product, index, onPreview, onAddToCart, onWishlist }) => (
+const ProductCard = ({ product, index, onNavigate, onAddToCart, onWishlist }) => (
     <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        id={`product-${product.ProductID}`}
+        onClick={onNavigate}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.05 }}
-        className="group relative bg-white rounded-[40px] p-5 flex flex-col transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-100/50"
+        transition={{ duration: 0.4, delay: index * 0.05 }}
+        className="group relative bg-white rounded-[30px] p-6 flex flex-col cursor-pointer border-2 border-black shadow-[6px_6px_0px_0px_#000] hover:shadow-[10px_10px_0px_0px_#EB0C46] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-300"
     >
-        {/* Image Container with 20px radius on actual image area */}
-        <div className="relative aspect-square mb-6 bg-[#F3F4F6] rounded-[30px] overflow-hidden">
-            {/* Action Buttons Top */}
-            <div className="absolute top-4 left-4 right-4 z-10 flex justify-between items-start pointer-events-none">
-                <button 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onWishlist();
-                    }}
-                    className="pointer-events-auto w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-black/30 hover:text-brand-accent transition-all shadow-sm active:scale-90"
-                >
-                    <Heart size={18} />
-                </button>
-                <button 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onPreview();
-                    }}
-                    className="pointer-events-auto w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-black/30 hover:text-black transition-all shadow-sm active:scale-90 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
-                >
-                    <Eye size={18} />
-                </button>
+        {/* Header: Title and Wishlist */}
+        <div className="flex justify-between items-start z-10">
+            <div>
+                <h3 className="text-[16px] md:text-[17px] font-bold text-black tracking-tight leading-tight mb-1 pr-4">
+                    {product.ProductName}
+                </h3>
+                <p className="text-[10px] font-black text-black/40 uppercase tracking-widest">
+                    1 COLOR
+                </p>
             </div>
-            
+            <button 
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onWishlist();
+                }}
+                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black/40 hover:text-brand-accent transition-all shadow-[0_2px_10px_rgba(0,0,0,0.05)] active:scale-90 flex-shrink-0"
+            >
+                <Heart size={14} />
+            </button>
+        </div>
+
+        {/* Sneaker Image */}
+        <div className="relative flex-1 flex items-center justify-center mt-8 mb-8 min-h-[160px]">
             <motion.img 
                 layoutId={`img-${product.ProductID}`}
                 src={product.ProductImageURL} 
                 alt={product.ProductName} 
-                className="w-full h-full object-cover p-4 rounded-[20px] transition-transform duration-700 ease-out group-hover:scale-105"
+                className="w-full h-full object-cover sm:object-contain scale-110 transition-transform duration-700 ease-out group-hover:scale-125 group-hover:-translate-y-2 drop-shadow-xl mix-blend-multiply"
             />
-            
-            {/* Overlay Hint */}
-            <div onClick={onPreview} className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity flex items-center justify-center">
-                <span className="bg-white px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-black shadow-lg translate-y-4 group-hover:translate-y-0 transition-transform">Quick View</span>
-            </div>
         </div>
 
-        {/* Content Area */}
-        <div className="px-2 pb-2 flex-col space-y-4">
-            {/* Color Swatches (Static placeholder or logic based on variant) */}
-            <div className="flex gap-2 mb-2">
-                {['#000000', '#FFFFFF', '#DC2626'].map((color, i) => (
-                    <div 
-                        key={i} 
-                        className="w-4 h-4 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.05)] cursor-pointer hover:scale-110 transition-transform"
-                        style={{ backgroundColor: color }}
-                    />
-                ))}
-            </div>
-
-            {/* Name & Price Row */}
-            <div className="flex items-start justify-between">
-                <div className="flex-1 pr-4">
-                    <h3 className="text-xl font-bold text-black tracking-tight leading-none mb-1 font-outfit line-clamp-1">
-                        {product.ProductName}
-                    </h3>
-                    <p className="text-[13px] text-black/40 font-medium leading-tight line-clamp-1">
-                        {product.Description}
-                    </p>
+        {/* Footer: Price, Rating, and Add to Cart */}
+        <div className="flex items-center justify-between mt-auto z-10">
+            <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-[15px] md:text-[17px] font-bold text-black tracking-tighter">${product.Price}</span>
+                <div className="flex items-center gap-1 text-[10px] md:text-[11px] font-bold text-black/40">
+                    <Star size={12} className="text-orange-500 fill-orange-500" />
+                    <span className="text-black/70 font-black">{(product.Rating || 4.3).toFixed(1)}</span>
+                    <span className="font-medium tracking-tighter">({product.ReviewCount || 123})</span>
                 </div>
-                <p className="text-xl font-black text-black tracking-tighter leading-none font-outfit whitespace-nowrap">
-                    ${product.Price}
-                </p>
             </div>
 
-            {/* Add to Cart Button - Refined Modern Pill */}
-            <div className="pt-2">
-                <button 
-                    disabled={product.StockQuantity === 0}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onAddToCart();
-                    }}
-                    className={`flex items-center justify-center gap-3 w-full h-11 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all duration-500 shadow-sm active:scale-95 group/btn ${product.StockQuantity > 0 ? 'bg-[#1A1A1A] text-white hover:bg-brand-accent hover:shadow-[0_15px_30px_-5px_rgba(239,68,68,0.3)]' : 'bg-gray-100 text-black/20 cursor-not-allowed'}`}
-                >
-                    <ShoppingCart size={15} className="transition-transform group-hover/btn:-translate-y-0.5" />
-                    <span>{product.StockQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}</span>
-                </button>
-            </div>
+            <button 
+                disabled={product.StockQuantity === 0}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onAddToCart();
+                }}
+                className={`px-3 md:px-4 py-2 rounded-full font-bold text-[10px] md:text-[11px] border border-black/10 transition-all active:scale-95 whitespace-nowrap ${product.StockQuantity > 0 ? 'bg-white text-black hover:border-black/30 shadow-sm' : 'bg-transparent text-black/20 cursor-not-allowed border-transparent'}`}
+            >
+                {product.StockQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+            </button>
         </div>
     </motion.div>
 );

@@ -1,16 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import shopImage from '../assets/images/shop1.jpg';
+import shopImage from '../assets/images/shop1.avif';
 
 const ShopHero = () => {
     return (
         <section className="relative w-full h-screen bg-[#4A7B8E] overflow-hidden flex items-center justify-center">
             {/* Background Image Container */}
             <div className="absolute inset-0 z-0">
-                <img 
-                    src={shopImage} 
-                    alt="Latest Collection" 
+                <img
+                    src={shopImage}
+                    alt="Latest Collection"
                     className="w-full h-full object-cover object-center"
                 />
                 {/* Overlay for better text readability and teal tint to match reference */}
@@ -18,7 +18,7 @@ const ShopHero = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-6 w-full relative z-10 flex flex-col lg:grid lg:grid-cols-2 gap-8 md:gap-12 items-center justify-center h-full pt-20 md:pt-0">
-                
+
                 {/* Left Content / Top Content on Mobile */}
                 <div className="flex flex-col justify-center w-full">
                     <motion.div
@@ -48,8 +48,11 @@ const ShopHero = () => {
                         <p className="text-white/80 text-sm md:text-base font-medium leading-relaxed mb-8 md:mb-12">
                             Clothing is more than just a way to cover the body—it's a form of self-expression, culture, and identity.
                         </p>
-                        
-                        <button className="group relative flex items-center gap-4 bg-white text-black pl-8 pr-2 py-2 rounded-full font-bold transition-all hover:pr-3 hover:bg-brand-accent hover:text-white">
+
+                        <button
+                            onClick={() => document.getElementById('product-grid')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="group relative flex items-center gap-4 bg-white text-black pl-8 pr-2 py-2 rounded-full font-bold transition-all hover:pr-3 hover:bg-brand-accent hover:text-white"
+                        >
                             <span className="text-xs md:text-sm tracking-tight uppercase">Shop Now</span>
                             <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center transition-transform group-hover:bg-white group-hover:text-brand-accent group-hover:rotate-45">
                                 <ArrowRight size={18} strokeWidth={3} />

@@ -7,17 +7,17 @@ const { poolPromise, sql } = require('../db');
 router.get('/', async (req, res) => {
     try {
         const pool = await poolPromise;
-        
+
         // Extract query parameters
-        let { 
-            page = 1, 
-            limit = 12, 
-            search = '', 
-            brand = '', 
-            category = '', 
-            minPrice = 0, 
-            maxPrice = 10000, 
-            sort = 'newest' 
+        let {
+            page = 1,
+            limit = 12,
+            search = '',
+            brand = '',
+            category = '',
+            minPrice = 0,
+            maxPrice = 10000,
+            sort = 'newest'
         } = req.query;
 
         page = parseInt(page);
@@ -76,7 +76,7 @@ router.get('/', async (req, res) => {
         request.input('limit', sql.Int, limit);
 
         const result = await request.query(query);
-        
+
         const products = result.recordset;
         const totalCount = products.length > 0 ? products[0].TotalCount : 0;
         const totalPages = Math.ceil(totalCount / limit);
